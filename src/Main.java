@@ -1,6 +1,7 @@
 
 
 import java.io.*;
+import java.io.FileReader;
 import java.util.Scanner;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -8,6 +9,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.lang.String;
+import java.awt.*;
+
 
 
 public class Main {
@@ -23,11 +26,13 @@ public class Main {
         int resultWorkFire = 0;
         int resultInstAnti = 0;
         int resultWorkAnti = 0;
+        int resultTestAnti = 0;
         String result1 = "";
         String result2 = "";
         String result3 = "";
         String result4 = "";
         String result5 = "";
+        String result6 = "";
         do {
             System.out.println("-----------------------------------");
             System.out.println("Введите номер пункта:");
@@ -92,13 +97,14 @@ public class Main {
                         System.out.println("----Проверка антивирусного программного обеспечения----");
                         System.out.println("1.Проверка наличия установленного антивируса");
                         System.out.println("2.Проверка работоспособности антивирусного ПО");
-                        System.out.println("3.Назад");
+                        System.out.println("3.Тестирование антивирусного ПО");
+                        System.out.println("4.Назад");
                         System.out.println("-----------------------------------");
                         int n2 = scanner.nextInt();
                         switch (n2){
                             case 1:
                                 String value = Main.readRegistry("HKLM\\SOFTWARE\\Microsoft\\Windows Defender"
-                                        , "DisableAntivirus");
+                                        , "DisableAntiSpyware");
                                 System.out.println(value);
                                 resultInstAnti = 1;
                                 flag1 = 0;
@@ -116,6 +122,18 @@ public class Main {
                                 }
                                 break;
                             case 3:
+                                if(testAntivirus()){
+                                    System.out.println("Антивирус работает правильно");
+                                    resultTestAnti = 1;
+                                    flag1 = 0;
+                                }
+                                else{
+                                    System.out.println("Антивирус работает неправильно");
+                                    resultTestAnti = 1;
+                                    flag1 = 0;
+                                }
+                                break;
+                            case 4:
                                 flag1 = 1; // чтобы вернуться назад
                                 break;
                             default:
@@ -187,8 +205,20 @@ public class Main {
                         }
                     }
                     else {
-                        System.out.println("5. Тестирования антивируса на данном ПК не выполнялась");
-                        result5 = "5. Тестирования антивируса на данном ПК не выполнялась";
+                        System.out.println("5. Работоспособность антивируса на данном ПК не выполнялась");
+                        result5 = "5. Работоспособность антивируса на данном ПК не выполнялась";
+                    }
+                    if (resultTestAnti == 1){
+                        if(testAntivirus()){
+                            System.out.println("Антивирус работает правильно");
+                            result6 = "Антивирус работает правильно";
+                        }
+                        else{
+                            System.out.println("Антивирус работает неправильно");
+                            result6 = "Антивирус работает неправильно";
+                        }
+                    } else {
+                        System.out.println("6. Тестирования антивируса на данном ПК не выполнялась");
                     }
 
                     resultInet = 0;
@@ -196,9 +226,10 @@ public class Main {
                     resultWorkFire = 0;
                     resultInstAnti = 0;
                     resultWorkAnti = 0;
+                    resultTestAnti = 0;
                     break;
                 case 4:
-                    Savefile(result1,result2,result3,result4,result5);
+                    Savefile(result1,result2,result3,result4,result5,result6);
                     break;
                 case 5:
                     flagMain = 1;
@@ -252,7 +283,7 @@ public class Main {
     // Проверка работоспособности межсетевого экрана
     public static boolean checkWorkingFireWall() {
         boolean result;
-        HttpURLConnection url1 = null;
+        HttpURLConnection url1;
         String res = null;
         try {
             url1 = (HttpURLConnection) new URL("https://ru.stackoverflow.com/").openConnection();
@@ -262,16 +293,16 @@ public class Main {
             e.printStackTrace();
         }
         if (res == null) {
-            result = false;
+            result = true;
             return result;
         }
         else{
-            result = true;
+            result = false;
             return result;
         }
     }
 
-    // Проверка наличия установленного антивируса через чтения регистра
+    // Проверка наличия установленного антивируса через чтения реестра
     public static final String readRegistry(String location, String key) {
         String error = "Антивирус не установлен в системе";
         String successfully = "Антивирус установлен в системе";
@@ -290,8 +321,9 @@ public class Main {
             // Вывод имеет следующий формат:
             // <Информация о версии> <ключ> <тип реестра> <значаение>
             if( ! output.contains("\t")){
-                if(output.isEmpty() || output.equals(check))
+                if(output.isEmpty() || output.equals(check)) {
                     return error;
+                }
                 return successfully;
             }
             return error;
@@ -341,8 +373,37 @@ public class Main {
         }
         return result;
     }
+    public static boolean testAntivirus() throws IOException {
+        String g = "X5O!P%@AP[4\\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*";
+        BufferedReader br = null;
+        boolean result = true;
+        try {
+            File file = new File("test.txt");
+            if(!file.exists())
+                file.createNewFile();
+            PrintWriter pw = new PrintWriter(file);
+            pw.println(g);
+            pw.close();
+            if (Desktop.isDesktopSupported()) {
+                Desktop.getDesktop().open(new File("C:\\Users\\artem\\IdeaProjects\\Projects1\\kyrsa4 Simonyan\\test.txt"));
+                br = new BufferedReader(new FileReader("test.txt"));
+                String line;
+                if((line = br.readLine()) != null){
+                    result = false;
+                    return result;
+                }
+                else{
+                    result = true;
+                    return result;
+                }
+            }
+        } catch (Exception e){
+            return result;
+        }
+        return result;
+    }
 
-    public static void Savefile(String result1,String result2,String result3,String result4,String result5) {
+    public static void Savefile(String result1,String result2,String result3,String result4,String result5,String result6) {
         try{
             File file = new File("results.txt");
             if(!file.exists())
@@ -353,6 +414,7 @@ public class Main {
             pw.println(result3);
             pw.println(result4);
             pw.println(result5);
+            pw.println(result6);
             pw.close();
         } catch (IOException e){
             System.out.print("Error: " + e);
