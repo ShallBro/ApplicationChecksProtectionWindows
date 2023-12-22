@@ -103,7 +103,7 @@ public class Main {
                         int n2 = scanner.nextInt();
                         switch (n2){
                             case 1:
-                                String value = Main.readRegistry("HKLM\\SOFTWARE\\Microsoft\\Windows Defender"
+                                String value = MainMenu.readRegistry("HKLM\\SOFTWARE\\Microsoft\\Windows Defender"
                                         , "DisableAntiSpyware");
                                 System.out.println(value);
                                 resultInstAnti = 1;
@@ -185,7 +185,7 @@ public class Main {
                         result3 = "3. Тестирования фаервола на данном ПК не выполнялась";
                     }
                     if (resultInstAnti == 1){
-                        String value = Main.readRegistry("HKLM\\SOFTWARE\\Microsoft\\Windows Defender"
+                        String value = MainMenu.readRegistry("HKLM\\SOFTWARE\\Microsoft\\Windows Defender"
                                 , "DisableAntivirus");
                         System.out.println(value);
                         result4 = value;
