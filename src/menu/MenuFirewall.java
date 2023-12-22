@@ -56,7 +56,6 @@ public class MenuFirewall implements Menu {
                 break;
             default:
                 error();
-                validationMenu(strArray);
                 break;
         }
     }

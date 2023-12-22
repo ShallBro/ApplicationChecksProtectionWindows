@@ -33,7 +33,6 @@ public class MainMenu implements Menu {
             menu();
             if(!scanner.hasNextInt()){
                 error();
-                continue;
             }
             else {
                 int num = scanner.nextInt();
@@ -60,10 +59,10 @@ public class MainMenu implements Menu {
                 Functional.saveFile(strArray);
                 break;
             case 5:
+                scanner.close();
                 System.exit(0);
             default:
                 error();
-                validationMenu(strArray);
                 break;
         }
     }

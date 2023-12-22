@@ -59,7 +59,6 @@ public class MenuAntivirus implements Menu {
                 break;
             default:
                 error();
-                validationMenu(strArray);
                 break;
         }
     }
