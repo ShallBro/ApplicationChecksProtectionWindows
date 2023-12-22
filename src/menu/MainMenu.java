@@ -1,17 +1,14 @@
+package menu;
+
+import logic.Functional;
+
+import java.io.IOException;
 import java.util.Scanner;
 
 public class MainMenu implements Menu {
-    private int flag = 0;
-    private int flag1 = 0;
-    private int flagMain = 0; // флаг возвращающий в главное меню
-    private int resultInet = 0;
-    private int resultInstFire = 0;
-    private int resultWorkFire = 0;
-    private int resultInstAnti = 0;
-    private int resultWorkAnti = 0;
-    private int resultTestAnti = 0;
     private Scanner scanner = new Scanner(System.in);
     private Menu menu;
+
 
     @Override
     public void menu() {
@@ -31,43 +28,50 @@ public class MainMenu implements Menu {
     }
 
     @Override
-    public void validationMenu() {
-        menu();
+    public void validationMenu(String[] strArray) throws IOException {
         while (true){
+            menu();
             if(!scanner.hasNextInt()){
                 error();
-                menu();
                 continue;
             }
             else {
                 int num = scanner.nextInt();
-                chooseNumber(num);
+                chooseNumber(num,strArray);
             }
         }
     }
 
     @Override
-    public void chooseNumber(int number) {
+    public void chooseNumber(int number, String[] strArray) throws IOException {
         switch (number){
             case 1:
                 menu = new MenuFirewall();
-                menu.validationMenu();
+                menu.validationMenu(strArray);
                 break;
             case 2:
                 menu = new MenuAntivirus();
-                menu.validationMenu();
+                menu.validationMenu(strArray);
                 break;
             case 3:
+                printResults(strArray);
+                break;
             case 4:
+                Functional.saveFile(strArray);
+                break;
             case 5:
                 System.exit(0);
             default:
                 error();
-                validationMenu();
+                validationMenu(strArray);
+                break;
         }
     }
 
+    public void printResults(String[] strArray){
+        for (int i = 0; i < strArray.length; i++) {
+            System.out.println(strArray[i]);
+        }
+    }
 
-    public void chooseNumberFirewall(){}
-    public void chooseNumberAntivirus(){}
 }
